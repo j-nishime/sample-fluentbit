@@ -1,0 +1,27 @@
+version: '3.5'
+services:
+  app:
+    image: node:16
+    ports:
+      - "10080:80"
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    command: npm start
+    depends_on:
+      - firelens
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: "localhost:24224"
+        fluentd-async-connect: "true"
+  fluentbit:
+    image: fluent/fluent-bit
+    volumes:
+      - ./fluentbit/fluent_bit_custom.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./fluentbit/parser.conf:/fluent-bit/etc/parser.conf
+      - ./fluentbit/stream_processor.conf:/fluent-bit/etc/stream_processor.conf
+    env_file: ./.env
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
