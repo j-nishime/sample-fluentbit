@@ -9,7 +9,7 @@ services:
     working_dir: /app
     command: npm start
     depends_on:
-      - firelens
+      - fluentbit
     logging:
       driver: fluentd
       options:
